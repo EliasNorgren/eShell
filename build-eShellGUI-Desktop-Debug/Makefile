@@ -52,12 +52,12 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../eShellGUI/main.cpp \
-		../eShellGUI/mainwindow.cpp \
-		A2DD.cpp moc_mainwindow.cpp
-OBJECTS       = main.o \
+SOURCES       = ../eShellBackend/eshellbackend.cpp \
+		../eShellGUI/main.cpp \
+		../eShellGUI/mainwindow.cpp moc_mainwindow.cpp
+OBJECTS       = eshellbackend.o \
+		main.o \
 		mainwindow.o \
-		A2DD.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -137,10 +137,10 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../eShellGUI/eShellGUI.pro ../eShellGUI/mainwindow.h \
-		A2DD.h ../eShellGUI/main.cpp \
-		../eShellGUI/mainwindow.cpp \
-		A2DD.cpp
+		../eShellGUI/eShellGUI.pro ../eShellBackend/eshellbackend.h \
+		../eShellGUI/mainwindow.h ../eShellBackend/eshellbackend.cpp \
+		../eShellGUI/main.cpp \
+		../eShellGUI/mainwindow.cpp
 QMAKE_TARGET  = eShellGUI
 DESTDIR       = 
 TARGET        = eShellGUI
@@ -326,8 +326,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../eShellGUI/mainwindow.h A2DD.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../eShellGUI/main.cpp ../eShellGUI/mainwindow.cpp A2DD.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../eShellBackend/eshellbackend.h ../eShellGUI/mainwindow.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../eShellBackend/eshellbackend.cpp ../eShellGUI/main.cpp ../eShellGUI/mainwindow.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../eShellGUI/mainwindow.ui $(DISTDIR)/
 
 
@@ -389,16 +389,16 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 
 ####### Compile
 
+eshellbackend.o: ../eShellBackend/eshellbackend.cpp ../eShellBackend/eshellbackend.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o eshellbackend.o ../eShellBackend/eshellbackend.cpp
+
 main.o: ../eShellGUI/main.cpp ../eShellGUI/mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../eShellGUI/main.cpp
 
 mainwindow.o: ../eShellGUI/mainwindow.cpp ../eShellGUI/mainwindow.h \
 		ui_mainwindow.h \
-		../eShellBackend/A2DD.h
+		../eShellBackend/eshellbackend.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../eShellGUI/mainwindow.cpp
-
-A2DD.o: A2DD.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o A2DD.o A2DD.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
