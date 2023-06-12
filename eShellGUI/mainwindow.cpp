@@ -21,7 +21,9 @@ void MainWindow::on_pushButton_clicked()
 {
 
     QString text = ui->lineEdit->text();
-    string res = this->backend->runCommand(text.toStdString());
-    ui->textBrowser->insertPlainText(QString::fromStdString(res));
+    vector<string> res = this->backend->runCommand(text.toStdString());
+    for (string s : res){
+        ui->textBrowser->insertPlainText(QString::fromStdString(s) + "\n");
+    }
 }
 
