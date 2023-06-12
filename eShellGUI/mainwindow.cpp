@@ -19,9 +19,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    eShellBackend be;
 
     QString text = ui->lineEdit->text();
-    ui->textBrowser->insertPlainText(text);
+    string res = this->backend->runCommand(text.toStdString());
+    ui->textBrowser->insertPlainText(QString::fromStdString(res));
 }
 

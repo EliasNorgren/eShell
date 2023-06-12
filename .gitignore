@@ -1,3 +1,5 @@
 .vscode/
 build-eShellGUI-Desktop-Debug/eShellGUI
 build-eShellGUI-Desktop-Debug/eshellbackend.o
+build-eShellGUI-Desktop-Debug/*.o
+*.o
