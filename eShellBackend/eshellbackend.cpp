@@ -14,25 +14,29 @@ eShellBackend::eShellBackend()
 
 string eShellBackend::runCommand(string command)
 {
-    cout << command << "\n";
+    if (this->systemCommands.find(command) != this->systemCommands.end())
+    {
+        return command;
+    }
 
-    return "asdasd";
+    return "Command not found";
 }
 
 void eShellBackend::initSystemCommands()
 {
-    cout << "Before file open\n";
-    ifstream sysCmdsFile("systemCommands");
-    cout << "After file open\n";
+    ifstream sysCmdsFile("/home/user/Documents/eShell/eShellBackend/systemCommands");
 
-    string command;
-    // Use a while loop together with the getline() function to read the file line by line
-    while (getline(sysCmdsFile, command))
+    if (!sysCmdsFile.is_open())
     {
-        // Output the text from the file
-        cout << command;
+        sysCmdsFile.close();
+        cout << "Could not open file\n";
+        return;
     }
 
-    // Close the file
+    string command;
+    while (getline(sysCmdsFile, command))
+    {
+        this->systemCommands.insert(command);
+    }
     sysCmdsFile.close();
 }
