@@ -21,12 +21,31 @@ eShellBackend::eShellBackend()
 vector<string> eShellBackend::runCommand(string input)
 {
     vector<string> splittedCommand = getSplittedCommand(input);
+
+    cout << "Splitted cmd:\n";
+    for (string s : splittedCommand)
+    {
+        cout << s << endl;
+    }
+    cout << "-------------\n";
+
+    cout << "Sys cmds:\n";
+    for (string s : this->systemCommands)
+    {
+        cout << s << endl;
+    }
+    cout << "-------------\n";
+
     string command = splittedCommand[0];
-    if (this->systemCommands.find(input) != this->systemCommands.end())
+    if (this->systemCommands.find(command) != this->systemCommands.end())
     {
         if (command.compare("ls") == 0)
         {
-            return this->runCommandls(splittedCommand);
+            return this->runCommandls();
+        }
+        else if (command.compare("cd") == 0)
+        {
+            return this->runCommandcd(splittedCommand);
         }
 
         vector<string> res;
@@ -41,7 +60,7 @@ vector<string> eShellBackend::runCommand(string input)
 void eShellBackend::initSystemCommands()
 {
 
-    ifstream sysCmdsFile("/home/user/Documents/eShell/eShellBackend/systemCommands");
+    ifstream sysCmdsFile("eShellBackend/systemCommands");
 
     if (!sysCmdsFile.is_open())
     {
@@ -75,7 +94,7 @@ vector<string> eShellBackend::getSplittedCommand(string command)
 
 // COMMANDFUNCTIONS !! ------------------------------------
 
-vector<string> eShellBackend::runCommandls(vector<string>)
+vector<string> eShellBackend::runCommandls()
 {
     vector<string> result;
 
@@ -97,4 +116,29 @@ vector<string> eShellBackend::runCommandls(vector<string>)
         }
     }
     return result;
+}
+
+vector<string> eShellBackend::runCommandcd(vector<string> cmd)
+{
+    vector<string> res;
+    if (cmd.size() < 2)
+    {
+        res.push_back("To few arguments to command cd");
+        return res;
+    }
+    fs::path newDirectory = cmd[1];
+
+    if (fs::exists(newDirectory) && fs::is_directory(newDirectory))
+    {
+        fs::current_path(newDirectory);
+        this->cwd = fs::current_path();
+        res.push_back("cwd: " + this->cwd);
+        std::cout << "Working directory changed to: " << fs::current_path() << '\n';
+    }
+    else
+    {
+        std::cout << "Directory does not exist or is not a valid directory.\n";
+    }
+
+    return res;
 }

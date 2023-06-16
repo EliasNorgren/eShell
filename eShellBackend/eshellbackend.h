@@ -15,8 +15,10 @@ private:
     string cwd;
 
     void initSystemCommands();
-    vector<string> runCommandls(vector<string>);
     vector<string> getSplittedCommand(string command);
+
+    vector<string> runCommandcd(vector<string> cmd);
+    vector<string> runCommandls();
 
 public:
     eShellBackend();
