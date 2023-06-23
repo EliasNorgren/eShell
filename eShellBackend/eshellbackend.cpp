@@ -6,6 +6,8 @@
 #include <filesystem>
 #include <list>
 #include <vector>
+#include <unistd.h>
+#include <sys/wait.h>
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -52,9 +54,38 @@ vector<string> eShellBackend::runCommand(string input)
         res.push_back("Command found but no suitable commandFunction found");
         return res;
     }
-    vector<string> res;
-    res.push_back("Command not found");
-    return res;
+
+    // Run outside command
+
+    pid_t pid = fork();
+
+    if (pid == 0)
+    {
+        // Create a null-terminated array of C-strings
+        vector<char *> cstrings;
+        for (auto &arg : splittedCommand)
+        {
+            cstrings.push_back(&arg[0]);
+        }
+        cstrings.push_back(nullptr);                         // Add a nullptr as the last element                                                                           // Child process
+        execvp(splittedCommand[0].c_str(), cstrings.data()); // Executes the command
+        vector<string> res;
+        res.push_back("Error executing command " + splittedCommand[0] + ".\n");
+        return res;
+    }
+    else if (pid > 0)
+    {                  // Parent process
+        wait(nullptr); // Wait for the child process to finish
+        vector<string> res;
+        res.push_back("Process has finished.\n");
+        return res;
+    }
+    else
+    {
+        vector<string> res;
+        res.push_back("Error forking process.\n");
+        return res;
+    }
 }
 
 void eShellBackend::initSystemCommands()
